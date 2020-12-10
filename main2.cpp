@@ -151,6 +151,8 @@ static uint32_t checkPacket(nfq_data* tb, int &flag, char* url) {
   ipHeader = (struct ip*)data;
   int ipHeaderLength = ipHeader->ip_hl * 4;
 
+  flag = NF_ACCEPT;
+
   if(ipHeader->ip_p == IPPROTO_TCP) { // check if it is tcp header
     data += ipHeaderLength;
     tcpHeader = (struct tcphdr*)data;
@@ -169,13 +171,10 @@ static uint32_t checkPacket(nfq_data* tb, int &flag, char* url) {
         if(isURL == 0) {
           // If the URL you want to block, then block it.
           flag = NF_DROP;
-        } else { flag = NF_ACCEPT; }
-
-      } else { flag = NF_ACCEPT; }
-
-    } else { flag = NF_ACCEPT; }
-
-  } else { flag = NF_ACCEPT; }
+        }
+      }
+    }
+  }
 
   return id;
 }
